@@ -14,9 +14,7 @@ pipeline {
         }
         stage('Start Selenium Grid') {
             steps {
-                // Start Hub + all 3 nodes in background
-                bat 'docker-compose up -d'
-                // Wait until Hub reports nodes are ready
+                bat 'docker-compose -f docker/docker-compose.yml up -d'
                 bat '''
                     @echo off
                     :WAIT
@@ -42,8 +40,7 @@ pipeline {
     }
     post {
         always {
-            // Tear down all containers after build
-            bat 'docker-compose down'
+            bat 'docker-compose -f docker/docker-compose.yml down'
             junit 'reports/junit.xml'
             allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
         }
