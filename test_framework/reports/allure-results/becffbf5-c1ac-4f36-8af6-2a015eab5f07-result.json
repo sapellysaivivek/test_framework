@@ -1,1 +1,0 @@
-{"name": "test_non_admin_cannot_access_users", "status": "passed", "start": 1773652863592, "stop": 1773652864942, "uuid": "ed300fda-7562-4b96-85b5-478dbfaecd28", "testCaseId": "075293abff0e2d13b60db923513a13bb", "fullName": "tests.test_access_control#test_non_admin_cannot_access_users", "titlePath": ["tests", "test_access_control.py"]}

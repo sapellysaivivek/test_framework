@@ -1,3 +1,0 @@
-# Murari Aashrith
-
-Initialized.
