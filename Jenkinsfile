@@ -14,15 +14,15 @@ pipeline {
         }
         stage('Start Selenium Grid') {
             steps {
-                // Start Grid in background, redirect logs to file
-                bat 'start /B java -jar selenium-server.jar standalone --port 4444 > selenium-grid.log 2>&1'
-                // Wait for Grid to be ready
+                // Start Hub + all 3 nodes in background
+                bat 'docker-compose up -d'
+                // Wait until Hub reports nodes are ready
                 bat '''
                     @echo off
                     :WAIT
                     curl -s http://localhost:4444/wd/hub/status | findstr "ready" >nul 2>&1
                     if errorlevel 1 (
-                        timeout /t 2 >nul
+                        timeout /t 3 >nul
                         goto WAIT
                     )
                     echo Selenium Grid is ready!
@@ -42,10 +42,24 @@ pipeline {
     }
     post {
         always {
-            // Kill Selenium Grid after tests
-            bat 'taskkill /F /IM java.exe /T >nul 2>&1 || exit /b 0'
+            // Tear down all containers after build
+            bat 'docker-compose down'
             junit 'reports/junit.xml'
             allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
         }
     }
 }
+```
+
+### How it all fits together
+```
+docker-compose up -d
+        │
+        ▼
+  selenium-hub (port 4444)
+        │
+        ├── chrome-node-1 (2 sessions)
+        ├── chrome-node-2 (2 sessions)
+        └── chrome-node-3 (2 sessions)
+                             
+Total = 6 parallel slots → matches -n 3 pytest workers
