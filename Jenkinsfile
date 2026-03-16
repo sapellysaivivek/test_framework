@@ -45,7 +45,8 @@ pipeline {
             steps {
                 powershell '''
                     $port = 4040
-                    Start-Process -NoNewWindow -FilePath "C:\\allure\\bin\\allure.bat" -ArgumentList "serve allure-results --port $port"
+                    $allure = "C:\\Users\\Aashrith\\scoop\\shims\\allure.cmd"
+                    Start-Process -NoNewWindow -FilePath $allure -ArgumentList "serve allure-results --port $port"
                     Start-Sleep -Seconds 5
                     Write-Host "========================================="
                     Write-Host "Allure Report is available at:"
